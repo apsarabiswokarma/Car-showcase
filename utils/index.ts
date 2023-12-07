@@ -1,3 +1,5 @@
+import { CarProps } from "@/types";
+
 export async function fetchCars() {
   const headers = {
     "X-RapidAPI-Key": "28faf77327msh372a2efb5d76511p168614jsn29a1c04c3235",
@@ -27,3 +29,5 @@ export const calculateCarRent = (city_mpg: number, year: number) => {
 
   return rentalRatePerDay.toFixed(0);
 };
+
+export const generateCarImagesUrl = (car: CarProps, angle: string) => {};
