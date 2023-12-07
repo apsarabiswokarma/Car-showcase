@@ -93,6 +93,18 @@ function SearchManufacturer({
           </Transition>
         </div>
       </Combobox>
+      {/* 
+      <div className="flex gap-10">
+        <section>kokokoko</section>
+        <div>oiii</div>
+        {true && (
+          <Fragment>
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+          </Fragment>
+        )}
+      </div> */}
     </div>
   );
 }
