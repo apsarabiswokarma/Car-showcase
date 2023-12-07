@@ -23,7 +23,7 @@ function SearchManufacturer({
         );
 
   return (
-    <div className="search-manufacture">
+    <div className="search-manufacture w-full">
       <Combobox value={manufacturer} onChange={setmanufacturer}>
         <div className="relative w-full">
           <Combobox.Button className="absolute top-[14px]">
@@ -36,9 +36,9 @@ function SearchManufacturer({
             />
           </Combobox.Button>
           <Combobox.Input
-            className="search-manufacturer__input"
-            placeholder="Volkswagen"
-            displayValue={(manufacturer: string) => manufacturer}
+            className="search-manufacturer__input "
+            placeholder="Volkswagen..."
+            displayValue={(item: string) => item}
             onChange={(e) => {
               setQuery(e.target.value);
             }}
