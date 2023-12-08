@@ -31,14 +31,13 @@ function SearchBar() {
   };
 
   const updateSearchParams = (model: string, manufacturer: string) => {
+    // 1st way
     const searchParams = new URLSearchParams(window.location.search);
-
     if (model) {
       searchParams.set("model", model);
     } else {
       searchParams.delete("model");
     }
-
     // Update or delete the 'manufacturer' search parameter based on the 'manufacturer' value
     if (manufacturer) {
       searchParams.set("manufacturer", manufacturer);
@@ -50,6 +49,9 @@ function SearchBar() {
       window.location.pathname
     }?${searchParams.toString()}`;
     router.push(newPathname);
+
+    // 2nd way
+    // router.push(`/?model=${model}&manufacturer=${manufacturer}`);
   };
 
   return (
