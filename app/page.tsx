@@ -1,78 +1,105 @@
-import CarCard from "@/components/CarCard";
-import CustomFilter from "@/components/CustomFilter";
-import Hero from "@/components/Hero";
-import SearchBar from "@/components/SearchBar";
-import ShowMore from "@/components/ShowMore";
-import { fuels, yearsOfProduction } from "@/constants";
-import { FilterProps } from "@/types";
-import { fetchCars } from "@/utils";
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: FilterProps;
-}) {
-  const allCars = await fetchCars({
-    manufacturer: searchParams.manufacturer || "",
-    year: searchParams.year || 2022,
-    fuel: searchParams.fuel || "",
-    limit: searchParams.limit || 10,
-    model: searchParams.model || "",
-  });
+import { fetchCars } from "@utils";
+import { fuels, yearsOfProduction } from "@constants";
+import { CarCard, ShowMore, SearchBar, CustomFilter, Hero } from "@components";
+import { CarState } from "@types";
 
-  const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
+export default function Home() {
+  const [allCars, setAllCars] = useState<CarState>([]);
+  const [loading, setLoading] = useState(false);
+
+  // search states
+  const [manufacturer, setManuFacturer] = useState("");
+  const [model, setModel] = useState("");
+
+  // filter state
+  const [fuel, setFuel] = useState("");
+  const [year, setYear] = useState(2022);
+
+  // limit state
+  const [limit, setLimit] = useState(10);
+
+  const getCars = async () => {
+    setLoading(true);
+    try {
+      const result = await fetchCars({
+        manufacturer: manufacturer.toLowerCase() || "",
+        model: model.toLowerCase() || "",
+        fuel: fuel.toLowerCase() || "",
+        year: year || 2022,
+        limit: limit || 10,
+      });
+
+      setAllCars(result);
+    } catch {
+      console.error();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCars();
+  }, [fuel, year, limit, manufacturer, model]);
 
   return (
     <main className="overflow-hidden">
       <Hero />
-      <div className="mt-12 padding-x padding-y max-width id=discover ">
+
+      <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
           <h1 className="text-4xl font-extrabold">Car Catalogue</h1>
-          <p>Explore the car you might like</p>
+          <p>Explore out cars you might like</p>
         </div>
+
         <div className="home__filters">
-          <SearchBar />
+          <SearchBar setManuFacturer={setManuFacturer} setModel={setModel} />
 
           <div className="home__filter-container">
-            <CustomFilter title="Fuel" options={fuels} />
-            <CustomFilter title="Year" options={yearsOfProduction} />
+            <CustomFilter options={fuels} setFilter={setFuel} />
+            <CustomFilter options={yearsOfProduction} setFilter={setYear} />
           </div>
         </div>
 
-        {!isDataEmpty ? (
+        {allCars.length > 0 ? (
           <section>
             <div className="home__cars-wrapper">
-              {allCars?.map((car) => (
-                <CarCard car={car} />
+              {allCars?.map((car, index) => (
+                <CarCard key={`car-${index}`} car={car} />
               ))}
             </div>
+
+            {loading && (
+              <div className="mt-16 w-full flex-center">
+                <Image
+                  src="./loader.svg"
+                  alt="loader"
+                  width={50}
+                  height={50}
+                  className="object-contain"
+                />
+              </div>
+            )}
+
             <ShowMore
-              pageNumber={(searchParams.limit || 10) / 10}
-              isNext={(searchParams.limit || 10) > allCars.length}
-            ></ShowMore>
+              pageNumber={limit / 10}
+              isNext={limit > allCars.length}
+              setLimit={setLimit}
+            />
           </section>
         ) : (
-          <div className="home__error-container">
-            <h2 className="text-black text-xl font-bold">Oops, No results</h2>
-            <p>{allCars?.message}</p>
-          </div>
+          !loading && (
+            <div className="home__error-container">
+              <h2 className="text-black text-xl font-bold">Oops, no results</h2>
+              <p>{allCars?.message}</p>
+            </div>
+          )
         )}
       </div>
     </main>
   );
 }
-
-// This component is rendered on the server side for better SEO
-// and improved initial page load performance.
-// Use SSR when SEO is a priority and for faster Time to Interactive (TTI).
-
-// Note: Server-side rendering is handled by the server and
-// the HTML is sent to the client, reducing the need for client-side rendering.
-
-// This component is rendered on the client side using JavaScript.
-// Use CSR when dynamic updates and a smoother user experience
-// after the initial page load are the main priorities.
-
-// Note: Client-side rendering shifts rendering responsibilities to the browser,
-// enabling dynamic content updates without full page reloads.
