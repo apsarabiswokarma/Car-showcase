@@ -40,7 +40,7 @@ function SearchManufacturer({
             placeholder="Volkswagen..."
             displayValue={(item: string) => item}
             onChange={(e) => {
-              setQuery(e.target.value);
+              setQuery(e.target.value); // Update the search query when the input changes
             }}
           />
           <Transition

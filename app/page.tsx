@@ -62,3 +62,17 @@ export default async function Home({
     </main>
   );
 }
+
+// This component is rendered on the server side for better SEO
+// and improved initial page load performance.
+// Use SSR when SEO is a priority and for faster Time to Interactive (TTI).
+
+// Note: Server-side rendering is handled by the server and
+// the HTML is sent to the client, reducing the need for client-side rendering.
+
+// This component is rendered on the client side using JavaScript.
+// Use CSR when dynamic updates and a smoother user experience
+// after the initial page load are the main priorities.
+
+// Note: Client-side rendering shifts rendering responsibilities to the browser,
+// enabling dynamic content updates without full page reloads.
